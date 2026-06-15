@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Entrenador Baloncesto - Planificador de Entrenamientos</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1a472a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HoopsTrainer">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+    }
+    body {
+      background: #1a472a;
+      margin: 0;
+      padding: 20px;
+      color: #fff;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #2c5e3a;
+      border-radius: 32px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .form-group {
+      background: #1f3b2c;
+      padding: 12px 18px;
+      border-radius: 28px;
+      margin-bottom: 16px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+    select, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 40px;
+      border: none;
+      font-size: 1rem;
+      background: #f9c74f;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button {
+      background: #f9844a;
+      color: white;
+      font-size: 1.2rem;
+      margin-top: 8px;
+    }
+    button:hover {
+      background: #f2702e;
+      transform: scale(0.98);
+    }
+    .boton-pdf {
+      background: #577590;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    .boton-pdf:hover {
+      background: #3a5a6e;
+    }
+    .resultado {
+      background: #f8f3e6;
+      color: #1e2f23;
+      border-radius: 28px;
+      padding: 20px;
+      margin-top: 25px;
+      overflow-x: auto;
+    }
+    .ejercicio-item {
+      border-bottom: 1px solid #c0b28a;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+    }
+    .grafico {
+      background: #ddd6c8;
+      padding: 10px;
+      border-radius: 20px;
+      margin: 10px 0;
+      font-style: italic;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+    h3 {
+      margin: 10px 0 5px;
+      color: #b6622e;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      margin-top: 20px;
+      opacity: 0.7;
+    }
+    /* Estilos para impresión / PDF */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+      .container {
+        background: white;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .form-group, .boton-pdf, button, footer, h1, #generarBtn, .boton-pdf {
+        display: none;
+      }
+      .resultado {
+        background: white;
+        color: black;
+        padding: 0;
+        margin: 0;
+        border-radius: 0;
+      }
+      .ejercicio-item {
+        border-bottom: 1px solid #ccc;
+        page-break-inside: avoid;
+      }
+      .grafico {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+      }
+      h2, h3 {
+        color: black;
+      }
+    }
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .container { padding: 15px; }
+      h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🏀 PLANIFICADOR DE ENTRENAMIENTOS 🏀</h1>
+  <div class="form-group">
+    <label>📅 Edad</label>
+    <select id="edad">
+      <option value="7-10">7-10 años</option>
+      <option value="11-14" selected>11-14 años</option>
+      <option value="15-18">15-18 años</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>📊 Nivel</label>
+    <select id="nivel">
+      <option value="principiante">Principiante</option>
+      <option value="intermedio" selected>Intermedio</option>
+      <option value="avanzado">Avanzado</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>🏋️ Tipo de ejercicio principal</label>
+    <select id="tipo">
+      <option value="fuerza">💪 Fuerza</option>
+      <option value="velocidad">⚡ Velocidad</option>
+      <option value="defensa">🛡️ Defensa</option>
+      <option value="3x3">🏀 3x3</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>🔢 Cantidad de ejercicios (sin contar calentamiento/estiramientos)</label>
+    <select id="cantidad">
+      <option value="4">4 ejercicios</option>
+      <option value="5" selected>5 ejercicios</option>
+      <option value="6">6 ejercicios</option>
+      <option value="7">7 ejercicios</option>
+      <option value="8">8 ejercicios</option>
+    </select>
+  </div>
+  <button id="generarBtn">✨ GENERAR ENTRENAMIENTO DE 90 MIN ✨</button>
+  <button id="exportarPdfBtn" class="boton-pdf">📄 EXPORTAR A PDF / IMPRIMIR</button>
+  <div id="resultado" class="resultado"></div>
+  <footer>PWA instalable - Exporta a PDF con el botón superior</footer>
+</div>
+
+<script>
+  // BASE DE DATOS DE EJERCICIOS (igual que antes)
+  const ejerciciosDB = {
+    fuerza: [
+      { nombre: "Sentadillas con salto", duracionBase: 8, material: "Ninguno", grafico: "🏋️ Dibujo: jugador en cuclillas con flecha hacia arriba indicando salto explosivo." },
+      { nombre: "Plancha con toque de hombros", duracionBase: 6, material: "Colchoneta", grafico: "🖐️ Dibujo: posición plancha, una mano toca el hombro contrario." },
+      { nombre: "Zancadas con balón medicinal", duracionBase: 7, material: "Balón medicinal (2-4kg)", grafico: "🏃‍♂️ Dibujo: zancada adelantada con balón sobre la cabeza." },
+      { nombre: "Saltos al cajón", duracionBase: 7, material: "Cajón plinto", grafico: "📦 Dibujo: saltando sobre un cajón de 30-40cm." },
+      { nombre: "Fondos en banco", duracionBase: 6, material: "Banco", grafico: "🪑 Dibujo: manos atrás en banco, bajar y subir." }
+    ],
+    velocidad: [
+      { nombre: "Sprint en escalera", duracionBase: 6, material: "Escalera de agilidad", grafico: "🔲 Dibujo: escalera en el suelo, pies rápidos." },
+      { nombre: "Cambios de dirección con conos", duracionBase: 8, material: "5 conos", grafico: "⛰️ Dibujo: zigzag entre conos." },
+      { nombre: "Carrera de ida y vuelta", duracionBase: 7, material: "Conos", grafico: "🏁 Dibujo: sprint tocar línea y regresar." },
+      { nombre: "Persecución por parejas", duracionBase: 9, material: "Ninguno", grafico: "👥 Dibujo: un jugador persigue al otro." },
+      { nombre: "Reacción a señal", duracionBase: 6, material: "Silbato", grafico: "💡 Dibujo: sprint al sonido." }
+    ],
+    defensa: [
+      { nombre: "Defensa en espejo", duracionBase: 7, material: "Ninguno", grafico: "🪞 Dibujo: imitar movimientos sin cruzar pies." },
+      { nombre: "1c1 con ataque rápido", duracionBase: 9, material: "Balón", grafico: "🏀 Dibujo: defender penetración." },
+      { nombre: "Cierre y ayuda", duracionBase: 10, material: "Balón, conos", grafico: "🔄 Dibujo: rotación defensiva." },
+      { nombre: "Defensa del pick & roll", duracionBase: 10, material: "Balón", grafico: "🚧 Dibujo: pasar bloqueo." },
+      { nombre: "Recuperación en transición", duracionBase: 8, material: "Balón", grafico: "⚡ Dibujo: correr y meterse entre atacante y aro." }
+    ],
+    tresx3: [
+      { nombre: "Pases y cortes (3x0)", duracionBase: 9, material: "Balón", grafico: "✂️ Dibujo: triángulo ofensivo, pase y corte." },
+      { nombre: "3x2 continuo", duracionBase: 12, material: "Balón, petos", grafico: "👥 Dibujo: 3 atacantes vs 2 defensores." },
+      { nombre: "Bloqueo indirecto", duracionBase: 10, material: "Balón", grafico: "🧱 Dibujo: bloqueo sin balón." },
+      { nombre: "Espaciado y penetración", duracionBase: 11, material: "Balón", grafico: "📐 Dibujo: penetración y pase." },
+      { nombre: "Recepción y finalización", duracionBase: 8, material: "Balón", grafico: "🏃 Dibujo: pase en carrera y bandeja." }
+    ]
+  };
+
+  function obtenerListaEjercicios(tipoPrincipal, cantidad) {
+    let lista = [];
+    let tipoPrimario = tipoPrincipal;
+    let tipoSecundario = (tipoPrincipal === "fuerza") ? "velocidad" : (tipoPrincipal === "velocidad") ? "fuerza" : "defensa";
+    
+    let poolPrincipal = [...ejerciciosDB[tipoPrimario]];
+    for (let i = 0; i < Math.ceil(cantidad / 2); i++) {
+      if (poolPrincipal.length === 0) poolPrincipal = [...ejerciciosDB[tipoPrimario]];
+      let idx = Math.floor(Math.random() * poolPrincipal.length);
+      lista.push({ ...poolPrincipal[idx], tipo: tipoPrimario });
+      poolPrincipal.splice(idx, 1);
+      if (lista.length >= cantidad) break;
+    }
+    if (lista.length < cantidad) {
+      let poolSec = [...ejerciciosDB[tipoSecundario]];
+      while (lista.length < cantidad && poolSec.length > 0) {
+        let idx = Math.floor(Math.random() * poolSec.length);
+        lista.push({ ...poolSec[idx], tipo: tipoSecundario });
+        poolSec.splice(idx, 1);
+      }
+    }
+    if (lista.length < cantidad) {
+      let otrosTipos = ["fuerza","velocidad","defensa","tresx3"].filter(t => t !== tipoPrimario && t !== tipoSecundario);
+      let poolOtros = [];
+      otrosTipos.forEach(t => poolOtros.push(...ejerciciosDB[t]));
+      while (lista.length < cantidad && poolOtros.length > 0) {
+        let idx = Math.floor(Math.random() * poolOtros.length);
+        lista.push({ ...poolOtros[idx], tipo: "otro" });
+        poolOtros.splice(idx, 1);
+      }
+    }
+    while (lista.length < cantidad) {
+      lista.push({ ...ejerciciosDB[tipoPrimario][0] });
+    }
+    return lista.slice(0, cantidad);
+  }
+
+  function generarEntrenamiento() {
+    const edad = document.getElementById("edad").value;
+    const nivel = document.getElementById("nivel").value;
+    const tipo = document.getElementById("tipo").value;
+    const cantidadEjercicios = parseInt(document.getElementById("cantidad").value);
+    
+    const ejerciciosSeleccionados = obtenerListaEjercicios(tipo, cantidadEjercicios);
+    const tiempoPrincipal = 70;
+    let duraciones = [];
+    let suma = 0;
+    for (let i = 0; i < ejerciciosSeleccionados.length; i++) {
+      let base = ejerciciosSeleccionados[i].duracionBase;
+      let factor = 1;
+      if (nivel === "principiante") factor = 0.9;
+      if (nivel === "avanzado") factor = 1.1;
+      if (edad === "7-10") factor *= 0.8;
+      if (edad === "15-18") factor *= 1.1;
+      let duracion = Math.round(base * factor);
+      duraciones.push(duracion);
+      suma += duracion;
+    }
+    if (suma !== tiempoPrincipal && suma > 0) {
+      let ajuste = tiempoPrincipal / suma;
+      duraciones = duraciones.map(d => Math.max(4, Math.round(d * ajuste)));
+      let nuevaSuma = duraciones.reduce((a,b)=>a+b,0);
+      if (nuevaSuma !== tiempoPrincipal) {
+        duraciones[0] += (tiempoPrincipal - nuevaSuma);
+      }
+    }
+    
+    let html = `<div><h2>🏆 ENTRENAMIENTO DE 90 MINUTOS 🏆</h2>
+    <p><strong>Edad:</strong> ${edad}  |  <strong>Nivel:</strong> ${nivel}  |  <strong>Énfasis:</strong> ${tipo.toUpperCase()}  |  <strong>Ejercicios:</strong> ${cantidadEjercicios}</p>
+    <div class="ejercicio-item"><h3>🧘 INICIO - CALENTAMIENTO Y MOVILIDAD (10 min)</h3>
+    <p>🔁 Estiramientos dinámicos: giros, brazos, cadera, zancadas, trote, skipping.<br> 
+    🏀 Material: ninguno o conos.<br>
+    <div class="grafico">📊 Gráfico: Silueta de jugador realizando círculos con brazos y skipping.</div>
+    </div>`;
+    
+    for (let i = 0; i < ejerciciosSeleccionados.length; i++) {
+      const ex = ejerciciosSeleccionados[i];
+      const duracion = duraciones[i];
+      html += `<div class="ejercicio-item">
+        <h3>⏱️ Ejercicio ${i+1}: ${ex.nombre} (${duracion} minutos)</h3>
+        <p><strong>🎯 Enfoque:</strong> ${ex.tipo.toUpperCase()}  |  <strong>🧰 Material:</strong> ${ex.material}</p>
+        <p><strong>📝 Explicación:</strong> ${ex.nombre}. ${ex.tipo === "fuerza" ? "Control y explosividad. Descanso 45 seg." : ex.tipo === "velocidad" ? "Máxima intensidad. Descanso activo 30 seg." : ex.tipo === "defensa" ? "Posición baja, pies rápidos." : "Movimiento sin balón, pases rápidos."}</p>
+        <div class="grafico">🎨 ${ex.grafico}</div>
+      </div>`;
+    }
+    
+    html += `<div class="ejercicio-item"><h3>🧘 FINAL - VUELTA A LA CALMA Y ESTIRAMIENTOS (10 min)</h3>
+    <p>🧘‍♂️ Estiramientos estáticos (20-30 seg): isquiotibiales, cuádriceps, gemelos, espalda baja, hombros.<br>
+    🧘 Material: colchoneta.<br>
+    <div class="grafico">📊 Gráfico: Jugador sentado tocándose los pies, estiramiento de brazo.</div>
+    </div>
+    <hr><p>✅ Plan generado automáticamente. Ajusta intensidad según el equipo. ¡Disfruta!</p></div>`;
+    
+    document.getElementById("resultado").innerHTML = html;
+  }
+  
+  document.getElementById("generarBtn").addEventListener("click", generarEntrenamiento);
+  document.getElementById("exportarPdfBtn").addEventListener("click", () => {
+    window.print();
+  });
+  window.addEventListener("load", generarEntrenamiento);
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('SW registrado:', reg.scope))
+        .catch(err => console.log('Error SW:', err));
+    });
+  }
+</script>
+</body>
+</html>
