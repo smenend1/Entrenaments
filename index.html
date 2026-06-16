@@ -201,220 +201,172 @@
   <button id="generarBtn">✨ GENERAR ENTRENAMIENTO DE 90 MIN ✨</button>
   <button id="exportarPdfBtn" class="boton-pdf">📄 EXPORTAR A PDF / IMPRIMIR</button>
   <div id="resultado" class="resultado"></div>
-  <footer>PWA instalable - Gráficos de pista SVG para cada ejercicio</footer>
+  <footer>PWA instalable - Ejercicios por edad y gráficos de pista</footer>
 </div>
 
 <script>
-  // BASE DE DATOS DE EJERCICIOS
+  // =================== BASE DE DATOS POR EDAD Y TIPO ===================
   const ejerciciosDB = {
-    fuerza: [
-      { nombre: "Sentadillas con salto", duracionBase: 8, material: "Ninguno", descripcion: "Control y explosividad. Descanso 45 seg." },
-      { nombre: "Plancha con toque de hombros", duracionBase: 6, material: "Colchoneta", descripcion: "Control y explosividad. Descanso 45 seg." },
-      { nombre: "Zancadas con balón medicinal", duracionBase: 7, material: "Balón medicinal (2-4kg)", descripcion: "Control y explosividad. Descanso 45 seg." },
-      { nombre: "Saltos al cajón", duracionBase: 7, material: "Cajón plinto", descripcion: "Control y explosividad. Descanso 45 seg." },
-      { nombre: "Fondos en banco", duracionBase: 6, material: "Banco", descripcion: "Control y explosividad. Descanso 45 seg." }
-    ],
-    velocidad: [
-      { nombre: "Sprint en escalera", duracionBase: 6, material: "Escalera de agilidad", descripcion: "Máxima intensidad. Descanso activo 30 seg." },
-      { nombre: "Cambios de dirección con conos", duracionBase: 8, material: "5 conos", descripcion: "Máxima intensidad. Descanso activo 30 seg." },
-      { nombre: "Carrera de ida y vuelta", duracionBase: 7, material: "Conos", descripcion: "Máxima intensidad. Descanso activo 30 seg." },
-      { nombre: "Persecución por parejas", duracionBase: 9, material: "Ninguno", descripcion: "Máxima intensidad. Descanso activo 30 seg." },
-      { nombre: "Reacción a señal", duracionBase: 6, material: "Silbato", descripcion: "Máxima intensidad. Descanso activo 30 seg." }
-    ],
-    defensa: [
-      { nombre: "Defensa en espejo", duracionBase: 7, material: "Ninguno", descripcion: "Posición baja, pies rápidos." },
-      { nombre: "1c1 con ataque rápido", duracionBase: 9, material: "Balón", descripcion: "Posición baja, pies rápidos." },
-      { nombre: "Cierre y ayuda", duracionBase: 10, material: "Balón, conos", descripcion: "Posición baja, pies rápidos." },
-      { nombre: "Defensa del pick & roll", duracionBase: 10, material: "Balón", descripcion: "Posición baja, pies rápidos." },
-      { nombre: "Recuperación en transición", duracionBase: 8, material: "Balón", descripcion: "Posición baja, pies rápidos." }
-    ],
-    tresx3: [
-      { nombre: "Pases y cortes (3x0)", duracionBase: 9, material: "Balón", descripcion: "Movimiento sin balón, pases rápidos." },
-      { nombre: "3x2 continuo", duracionBase: 12, material: "Balón, petos", descripcion: "Movimiento sin balón, pases rápidos." },
-      { nombre: "Bloqueo indirecto", duracionBase: 10, material: "Balón", descripcion: "Movimiento sin balón, pases rápidos." },
-      { nombre: "Espaciado y penetración", duracionBase: 11, material: "Balón", descripcion: "Movimiento sin balón, pases rápidos." },
-      { nombre: "Recepción y finalización", duracionBase: 8, material: "Balón", descripcion: "Movimiento sin balón, pases rápidos." }
-    ]
+    "7-10": {
+      fuerza: [
+        { nombre: "Sentadillas con salto (bajo)", duracionBase: 6, material: "Ninguno", descripcion: "Sentadillas con salto suave. 3 series de 8 repeticiones." },
+        { nombre: "Plancha sobre rodillas", duracionBase: 5, material: "Colchoneta", descripcion: "Plancha apoyando rodillas. 3 series de 20 segundos." },
+        { nombre: "Zancadas sin peso", duracionBase: 6, material: "Ninguno", descripcion: "Zancadas alternas sin carga. 3 series de 10 por pierna." },
+        { nombre: "Saltos a la comba", duracionBase: 5, material: "Cuerda", descripcion: "Saltos a la comba. 4 series de 30 segundos." },
+        { nombre: "Fondos en silla", duracionBase: 5, material: "Silla", descripcion: "Fondos con ayuda de silla. 3 series de 8 repeticiones." }
+      ],
+      velocidad: [
+        { nombre: "Carrera de relevos", duracionBase: 6, material: "Testigo", descripcion: "Carrera de relevos en grupos. 5 repeticiones." },
+        { nombre: "Slalom con aros", duracionBase: 6, material: "Aros", descripcion: "Slalom entre aros. 4 repeticiones." },
+        { nombre: "Sprint de 10 metros", duracionBase: 5, material: "Conos", descripcion: "Sprint de 10 metros. 6 repeticiones." },
+        { nombre: "Persecución en círculo", duracionBase: 7, material: "Ninguno", descripcion: "Persecución en círculo. 3 rondas." },
+        { nombre: "Reacción a colores", duracionBase: 5, material: "Pañuelos", descripcion: "Reacción a señales de colores. 8 repeticiones." }
+      ],
+      defensa: [
+        { nombre: "Defensa en zigzag", duracionBase: 6, material: "Conos", descripcion: "Desplazamiento defensivo en zigzag. 4 repeticiones." },
+        { nombre: "1c1 sin balón", duracionBase: 7, material: "Ninguno", descripcion: "1c1 sin balón, solo desplazamientos. 3 enfrentamientos." },
+        { nombre: "Cierre de línea de pase", duracionBase: 6, material: "Balón", descripcion: "Cerrar línea de pase. 5 repeticiones." },
+        { nombre: "Defensa de la zona", duracionBase: 7, material: "Conos", descripcion: "Defensa de zona 2-3. 4 rotaciones." },
+        { nombre: "Recuperación defensiva", duracionBase: 6, material: "Balón", descripcion: "Recuperación tras pérdida. 5 repeticiones." }
+      ],
+      "3x3": [
+        { nombre: "Pases y cortes sencillos", duracionBase: 7, material: "Balón", descripcion: "Pases y cortes en 3x0. 6 repeticiones." },
+        { nombre: "3x1 con pase extra", duracionBase: 8, material: "Balón", descripcion: "3x1, buscar pase extra. 5 posesiones." },
+        { nombre: "Bloqueo directo", duracionBase: 7, material: "Balón", descripcion: "Bloqueo directo en 3x3. 4 acciones." },
+        { nombre: "Espaciado básico", duracionBase: 7, material: "Balón", descripcion: "Mantener espaciado en ataque. 5 minutos." },
+        { nombre: "Recepción y tiro", duracionBase: 6, material: "Balón", descripcion: "Recepción y tiro en movimiento. 8 repeticiones." }
+      ]
+    },
+    "11-14": {
+      fuerza: [
+        { nombre: "Sentadillas con salto", duracionBase: 8, material: "Ninguno", descripcion: "Control y explosividad. 4 series de 10 repeticiones." },
+        { nombre: "Plancha con toque de hombros", duracionBase: 6, material: "Colchoneta", descripcion: "4 series de 10 toques por lado." },
+        { nombre: "Zancadas con balón medicinal", duracionBase: 7, material: "Balón medicinal", descripcion: "3 series de 8 por pierna." },
+        { nombre: "Saltos al cajón", duracionBase: 7, material: "Cajón plinto", descripcion: "4 series de 6 saltos." },
+        { nombre: "Fondos en banco", duracionBase: 6, material: "Banco", descripcion: "3 series de 12 repeticiones." }
+      ],
+      velocidad: [
+        { nombre: "Sprint en escalera", duracionBase: 6, material: "Escalera", descripcion: "Máxima velocidad en escalera. 6 repeticiones." },
+        { nombre: "Cambios de dirección con conos", duracionBase: 8, material: "5 conos", descripcion: "Zigzag entre conos. 4 series." },
+        { nombre: "Carrera de ida y vuelta", duracionBase: 7, material: "Conos", descripcion: "Sprint tocar línea y regresar. 6 repeticiones." },
+        { nombre: "Persecución por parejas", duracionBase: 9, material: "Ninguno", descripcion: "Persecución en espacio reducido. 4 cambios." },
+        { nombre: "Reacción a señal", duracionBase: 6, material: "Silbato", descripcion: "Sprint al sonido. 8 repeticiones." }
+      ],
+      defensa: [
+        { nombre: "Defensa en espejo", duracionBase: 7, material: "Ninguno", descripcion: "Imitar movimientos sin cruzar pies. 4x30 seg." },
+        { nombre: "1c1 con ataque rápido", duracionBase: 9, material: "Balón", descripcion: "Defender penetración. 6 enfrentamientos." },
+        { nombre: "Cierre y ayuda", duracionBase: 10, material: "Balón, conos", descripcion: "Rotación defensiva. 5 minutos." },
+        { nombre: "Defensa del pick & roll", duracionBase: 10, material: "Balón", descripcion: "Pasar bloqueo y recuperar. 8 repeticiones." },
+        { nombre: "Recuperación en transición", duracionBase: 8, material: "Balón", descripcion: "Correr y meterse entre atacante y aro. 6 situaciones." }
+      ],
+      "3x3": [
+        { nombre: "Pases y cortes (3x0)", duracionBase: 9, material: "Balón", descripcion: "Triángulo ofensivo, pase y corte. 10 finalizaciones." },
+        { nombre: "3x2 continuo", duracionBase: 12, material: "Balón, petos", descripcion: "3 atacantes vs 2 defensores. Rotar cada 2 posesiones." },
+        { nombre: "Bloqueo indirecto", duracionBase: 10, material: "Balón", descripcion: "Bloqueo sin balón. 8 acciones." },
+        { nombre: "Espaciado y penetración", duracionBase: 11, material: "Balón", descripcion: "Atacantes en esquinas, penetración y pase. 10 posesiones." },
+        { nombre: "Recepción y finalización", duracionBase: 8, material: "Balón", descripcion: "Pase en carrera y bandeja. 12 repeticiones." }
+      ]
+    },
+    "15-18": {
+      fuerza: [
+        { nombre: "Sentadillas con salto + peso", duracionBase: 9, material: "Peso (10kg)", descripcion: "Sentadillas con salto y lastre. 4 series de 8 repeticiones." },
+        { nombre: "Plancha con elevación de pierna", duracionBase: 7, material: "Colchoneta", descripcion: "Plancha elevando una pierna. 4 series de 12 toques." },
+        { nombre: "Zancadas con balón medicinal", duracionBase: 8, material: "Balón medicinal", descripcion: "3 series de 10 por pierna." },
+        { nombre: "Saltos al cajón + peso", duracionBase: 8, material: "Cajón plinto, peso", descripcion: "Saltos al cajón con peso. 4 series de 6." },
+        { nombre: "Fondos en banco con peso", duracionBase: 7, material: "Banco, peso", descripcion: "Fondos con peso extra. 3 series de 12." }
+      ],
+      velocidad: [
+        { nombre: "Sprint en escalera (máxima)", duracionBase: 7, material: "Escalera", descripcion: "Máxima velocidad en escalera. 8 repeticiones." },
+        { nombre: "Cambios de dirección con conos", duracionBase: 9, material: "5 conos", descripcion: "Zigzag explosivo. 5 series." },
+        { nombre: "Carrera de ida y vuelta (20m)", duracionBase: 8, material: "Conos", descripcion: "Sprint de 20m. 6 repeticiones." },
+        { nombre: "Persecución por parejas con balón", duracionBase: 10, material: "Balón", descripcion: "Persecución con balón. 6 cambios." },
+        { nombre: "Reacción a señal + sprint", duracionBase: 7, material: "Silbato", descripcion: "Reacción y sprint. 10 repeticiones." }
+      ],
+      defensa: [
+        { nombre: "Defensa en espejo (intenso)", duracionBase: 8, material: "Ninguno", descripcion: "Defensa en espejo con cambios de ritmo. 5x30 seg." },
+        { nombre: "1c1 con ataque rápido", duracionBase: 10, material: "Balón", descripcion: "Defensa 1c1 intensa. 8 enfrentamientos." },
+        { nombre: "Cierre y ayuda (2x2)", duracionBase: 11, material: "Balón, conos", descripcion: "Rotación defensiva 2x2. 6 minutos." },
+        { nombre: "Defensa del pick & roll (cambio)", duracionBase: 11, material: "Balón", descripcion: "Defensa pick & roll con cambio. 10 repeticiones." },
+        { nombre: "Recuperación en transición", duracionBase: 9, material: "Balón", descripcion: "Recuperación rápida. 8 situaciones." }
+      ],
+      "3x3": [
+        { nombre: "Pases y cortes (3x0) con continuidad", duracionBase: 10, material: "Balón", descripcion: "Triángulo ofensivo con continuidad. 12 finalizaciones." },
+        { nombre: "3x2 continuo con cambio", duracionBase: 13, material: "Balón, petos", descripcion: "3 atacantes vs 2 defensores. Rotar cada 3 posesiones." },
+        { nombre: "Bloqueo indirecto + penetración", duracionBase: 11, material: "Balón", descripcion: "Bloqueo indirecto y penetración. 10 acciones." },
+        { nombre: "Espaciado y penetración (1x1)", duracionBase: 12, material: "Balón", descripcion: "Espaciado y penetración 1x1. 12 posesiones." },
+        { nombre: "Recepción y finalización con pase", duracionBase: 9, material: "Balón", descripcion: "Recepción en movimiento y finalización. 14 repeticiones." }
+      ]
+    }
   };
 
-  // Función para generar SVG de pista según tipo
-  function generarSVG(tipo) {
-    let svg = `<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">`;
-    // Fondo de cancha
-    svg += `<rect width="400" height="300" fill="#d9c8a9" rx="8" />`;
-    // Líneas de cancha
-    svg += `<rect x="20" y="20" width="360" height="260" fill="none" stroke="#8b7355" stroke-width="2" />`;
-    svg += `<line x1="200" y1="20" x2="200" y2="280" stroke="#8b7355" stroke-width="2" stroke-dasharray="8,6" />`;
-    svg += `<circle cx="200" cy="150" r="30" fill="none" stroke="#8b7355" stroke-width="2" />`;
-    // Círculo central
-    svg += `<circle cx="200" cy="150" r="8" fill="#8b7355" />`;
-    // Áreas (pintadas)
-    svg += `<path d="M20 80 L80 80 L80 220 L20 220 Z" fill="#b8a080" opacity="0.4" />`;
-    svg += `<path d="M380 80 L320 80 L320 220 L380 220 Z" fill="#b8a080" opacity="0.4" />`;
-    // Líneas de tiro libre
-    svg += `<line x1="80" y1="80" x2="80" y2="220" stroke="#8b7355" stroke-width="2" />`;
-    svg += `<line x1="320" y1="80" x2="320" y2="220" stroke="#8b7355" stroke-width="2" />`;
-    // Círculo de tiro libre
-    svg += `<circle cx="80" cy="150" r="25" fill="none" stroke="#8b7355" stroke-width="2" />`;
-    svg += `<circle cx="320" cy="150" r="25" fill="none" stroke="#8b7355" stroke-width="2" />`;
+  // =================== GENERADOR DE SVG POR EJERCICIO ===================
+  function generarSVGDetallado(nombre, tipo, edad) {
+    // Plantilla base de cancha
+    let svg = `<svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">`;
+    svg += `<rect width="500" height="400" fill="#d9c8a9" rx="8" />`;
+    svg += `<rect x="20" y="20" width="460" height="360" fill="none" stroke="#8b7355" stroke-width="2" />`;
+    svg += `<line x1="250" y1="20" x2="250" y2="380" stroke="#8b7355" stroke-width="2" stroke-dasharray="10,6" />`;
+    svg += `<circle cx="250" cy="200" r="35" fill="none" stroke="#8b7355" stroke-width="2" />`;
+    svg += `<circle cx="250" cy="200" r="6" fill="#8b7355" />`;
+    svg += `<path d="M20 100 L80 100 L80 300 L20 300 Z" fill="#b8a080" opacity="0.3" />`;
+    svg += `<path d="M480 100 L420 100 L420 300 L480 300 Z" fill="#b8a080" opacity="0.3" />`;
+    svg += `<line x1="80" y1="100" x2="80" y2="300" stroke="#8b7355" stroke-width="2" />`;
+    svg += `<line x1="420" y1="100" x2="420" y2="300" stroke="#8b7355" stroke-width="2" />`;
+    svg += `<circle cx="80" cy="200" r="30" fill="none" stroke="#8b7355" stroke-width="2" />`;
+    svg += `<circle cx="420" cy="200" r="30" fill="none" stroke="#8b7355" stroke-width="2" />`;
+    svg += `<path d="M80 70 Q250 20 420 70" fill="none" stroke="#8b7355" stroke-width="2" stroke-dasharray="6,4" />`;
+    svg += `<path d="M80 330 Q250 380 420 330" fill="none" stroke="#8b7355" stroke-width="2" stroke-dasharray="6,4" />`;
 
-    // Dibujos específicos según tipo
-    if (tipo === "fuerza") {
-      // Figura haciendo sentadilla con barra
-      svg += `<circle cx="200" cy="200" r="20" fill="#e67e22" />`; // cabeza
-      svg += `<rect x="185" y="220" width="30" height="40" rx="10" fill="#e67e22" />`; // torso
-      svg += `<line x1="185" y1="230" x2="165" y2="260" stroke="#e67e22" stroke-width="6" stroke-linecap="round" />`; // pierna izq
-      svg += `<line x1="215" y1="230" x2="235" y2="260" stroke="#e67e22" stroke-width="6" stroke-linecap="round" />`; // pierna der
-      svg += `<line x1="165" y1="260" x2="235" y2="260" stroke="#e67e22" stroke-width="8" stroke-linecap="round" />`; // barra
-      svg += `<text x="200" y="50" font-size="16" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 FUERZA</text>`;
-    } else if (tipo === "velocidad") {
-      // Flechas y conos
-      svg += `<circle cx="100" cy="100" r="10" fill="#e74c3c" />`; // cono 1
-      svg += `<circle cx="150" cy="150" r="10" fill="#e74c3c" />`; // cono 2
-      svg += `<circle cx="200" cy="200" r="10" fill="#e74c3c" />`; // cono 3
-      svg += `<circle cx="250" cy="150" r="10" fill="#e74c3c" />`; // cono 4
-      svg += `<circle cx="300" cy="100" r="10" fill="#e74c3c" />`; // cono 5
-      // Flecha zigzag
-      svg += `<path d="M90 90 L150 150 L200 200 L250 150 L310 90" fill="none" stroke="#2980b9" stroke-width="4" marker-end="url(#arrow)" />`;
+    // Dibujos específicos según el nombre del ejercicio
+    if (nombre.includes("Sentadillas")) {
+      svg += `<circle cx="250" cy="250" r="22" fill="#e67e22" />`;
+      svg += `<rect x="235" y="270" width="30" height="45" rx="12" fill="#e67e22" />`;
+      svg += `<line x1="235" y1="290" x2="210" y2="330" stroke="#e67e22" stroke-width="8" stroke-linecap="round" />`;
+      svg += `<line x1="265" y1="290" x2="290" y2="330" stroke="#e67e22" stroke-width="8" stroke-linecap="round" />`;
+      svg += `<line x1="210" y1="330" x2="290" y2="330" stroke="#e67e22" stroke-width="10" stroke-linecap="round" />`;
+      svg += `<path d="M180 330 Q250 310 320 330" fill="none" stroke="#e67e22" stroke-width="3" stroke-dasharray="4,4" />`;
+      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 SENTADILLAS</text>`;
+    }
+    else if (nombre.includes("Plancha")) {
+      svg += `<rect x="190" y="240" width="120" height="40" rx="10" fill="#e67e22" />`;
+      svg += `<circle cx="210" cy="230" r="18" fill="#e67e22" />`;
+      svg += `<line x1="190" y1="280" x2="160" y2="320" stroke="#e67e22" stroke-width="8" />`;
+      svg += `<line x1="310" y1="280" x2="340" y2="320" stroke="#e67e22" stroke-width="8" />`;
+      svg += `<circle cx="210" cy="240" r="6" fill="white" />`;
+      svg += `<path d="M210 240 L230 240" stroke="white" stroke-width="3" />`;
+      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 PLANCHA</text>`;
+    }
+    else if (nombre.includes("Zancadas")) {
+      svg += `<circle cx="220" cy="220" r="22" fill="#e67e22" />`;
+      svg += `<rect x="205" y="240" width="30" height="40" rx="12" fill="#e67e22" />`;
+      svg += `<line x1="205" y1="260" x2="170" y2="310" stroke="#e67e22" stroke-width="8" />`;
+      svg += `<line x1="235" y1="260" x2="270" y2="290" stroke="#e67e22" stroke-width="8" />`;
+      svg += `<circle cx="280" cy="230" r="12" fill="#f1c40f" />`;
+      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 ZANCADAS</text>`;
+    }
+    else if (nombre.includes("Saltos al cajón")) {
+      svg += `<rect x="200" y="300" width="100" height="25" fill="#8e44ad" rx="4" />`;
+      svg += `<circle cx="250" cy="260" r="22" fill="#e67e22" />`;
+      svg += `<path d="M220 280 Q250 220 280 280" fill="none" stroke="#e67e22" stroke-width="4" stroke-dasharray="6,4" />`;
+      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 SALTOS AL CAJÓN</text>`;
+    }
+    else if (nombre.includes("Fondos")) {
+      svg += `<rect x="180" y="310" width="140" height="20" fill="#95a5a6" rx="4" />`;
+      svg += `<circle cx="210" cy="280" r="18" fill="#e67e22" />`;
+      svg += `<circle cx="290" cy="280" r="18" fill="#e67e22" />`;
+      svg += `<line x1="210" y1="290" x2="180" y2="310" stroke="#e67e22" stroke-width="6" />`;
+      svg += `<line x1="290" y1="290" x2="320" y2="310" stroke="#e67e22" stroke-width="6" />`;
+      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 FONDOS</text>`;
+    }
+    else if (nombre.includes("Sprint en escalera")) {
+      for (let i=0; i<8; i++) {
+        let x = 80 + i*40;
+        svg += `<rect x="${x}" y="180" width="30" height="30" fill="none" stroke="#e74c3c" stroke-width="2" />`;
+        svg += `<text x="${x+15}" y="200" font-size="12" fill="#e74c3c" text-anchor="middle">${i+1}</text>`;
+      }
+      svg += `<path d="M80 195 Q150 160 220 195 Q290 230 360 195" fill="none" stroke="#2980b9" stroke-width="4" marker-end="url(#arrow)" />`;
       svg += `<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2980b9" /></marker></defs>`;
-      svg += `<text x="200" y="50" font-size="16" font-weight="bold" fill="#2c3e50" text-anchor="middle">⚡ VELOCIDAD</text>`;
-    } else if (tipo === "defensa") {
-      // Atacante y defensor
-      svg += `<circle cx="250" cy="180" r="18" fill="#e67e22" />`; // atacante
-      svg += `<circle cx="150" cy="180" r="18" fill="#3498db" />`; // defensor
-      svg += `<line x1="168" y1="180" x2="232" y2="180" stroke="#2c3e50" stroke-width="2" stroke-dasharray="4,4" />`; // distancia
-      svg += `<text x="250" y="210" font-size="12" fill="#e67e22" text-anchor="middle">Atacante</text>`;
-      svg += `<text x="150" y="210" font-size="12" fill="#3498db" text-anchor="middle">Defensor</text>`;
-      svg += `<path d="M130 160 Q150 140 170 160" fill="none" stroke="#3498db" stroke-width="2" />`; // movimiento defensor
-      svg += `<text x="200" y="50" font-size="16" font-weight="bold" fill="#2c3e50" text-anchor="middle">🛡️ DEFENSA</text>`;
-    } else if (tipo === "3x3") {
-      // Tres jugadores en triángulo
-      svg += `<circle cx="200" cy="100" r="18" fill="#e67e22" />`; // jugador 1
-      svg += `<circle cx="140" cy="220" r="18" fill="#3498db" />`; // jugador 2
-      svg += `<circle cx="260" cy="220" r="18" fill="#2ecc71" />`; // jugador 3
-      svg += `<line x1="200" y1="100" x2="140" y2="220" stroke="#2c3e50" stroke-width="2" stroke-dasharray="4,4" />`; // pase
-      svg += `<line x1="200" y1="100" x2="260" y2="220" stroke="#2c3e50" stroke-width="2" stroke-dasharray="4,4" />`; // pase
-      svg += `<line x1="140" y1="220" x2="260" y2="220" stroke="#2c3e50" stroke-width="2" stroke-dasharray="4,4" />`; // pase
-      svg += `<text x="200" y="90" font-size="12" fill="#e67e22" text-anchor="middle">1</text>`;
-      svg += `<text x="140" y="250" font-size="12" fill="#3498db" text-anchor="middle">2</text>`;
-      svg += `<text x="260" y="250" font-size="12" fill="#2ecc71" text-anchor="middle">3</text>`;
-      svg += `<text x="200" y="50" font-size="16" font-weight="bold" fill="#2c3e50" text-anchor="middle">🏀 3x3</text>`;
+      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">⚡ SPRINT ESCALERA</text>`;
     }
-    svg += `</svg>`;
-    return svg;
-  }
-
-  function obtenerListaEjercicios(tipoPrincipal, cantidad) {
-    let lista = [];
-    let tipoPrimario = tipoPrincipal;
-    let tipoSecundario = (tipoPrincipal === "fuerza") ? "velocidad" : (tipoPrincipal === "velocidad") ? "fuerza" : "defensa";
-    
-    let poolPrincipal = [...ejerciciosDB[tipoPrimario]];
-    for (let i = 0; i < Math.ceil(cantidad / 2); i++) {
-      if (poolPrincipal.length === 0) poolPrincipal = [...ejerciciosDB[tipoPrimario]];
-      let idx = Math.floor(Math.random() * poolPrincipal.length);
-      lista.push({ ...poolPrincipal[idx], tipo: tipoPrimario });
-      poolPrincipal.splice(idx, 1);
-      if (lista.length >= cantidad) break;
-    }
-    if (lista.length < cantidad) {
-      let poolSec = [...ejerciciosDB[tipoSecundario]];
-      while (lista.length < cantidad && poolSec.length > 0) {
-        let idx = Math.floor(Math.random() * poolSec.length);
-        lista.push({ ...poolSec[idx], tipo: tipoSecundario });
-        poolSec.splice(idx, 1);
-      }
-    }
-    if (lista.length < cantidad) {
-      let otrosTipos = ["fuerza","velocidad","defensa","tresx3"].filter(t => t !== tipoPrimario && t !== tipoSecundario);
-      let poolOtros = [];
-      otrosTipos.forEach(t => poolOtros.push(...ejerciciosDB[t]));
-      while (lista.length < cantidad && poolOtros.length > 0) {
-        let idx = Math.floor(Math.random() * poolOtros.length);
-        lista.push({ ...poolOtros[idx], tipo: "otro" });
-        poolOtros.splice(idx, 1);
-      }
-    }
-    while (lista.length < cantidad) {
-      lista.push({ ...ejerciciosDB[tipoPrimario][0] });
-    }
-    return lista.slice(0, cantidad);
-  }
-
-  function generarEntrenamiento() {
-    const edad = document.getElementById("edad").value;
-    const nivel = document.getElementById("nivel").value;
-    const tipo = document.getElementById("tipo").value;
-    const cantidadEjercicios = parseInt(document.getElementById("cantidad").value);
-    
-    const ejerciciosSeleccionados = obtenerListaEjercicios(tipo, cantidadEjercicios);
-    const tiempoPrincipal = 70;
-    let duraciones = [];
-    let suma = 0;
-    for (let i = 0; i < ejerciciosSeleccionados.length; i++) {
-      let base = ejerciciosSeleccionados[i].duracionBase;
-      let factor = 1;
-      if (nivel === "principiante") factor = 0.9;
-      if (nivel === "avanzado") factor = 1.1;
-      if (edad === "7-10") factor *= 0.8;
-      if (edad === "15-18") factor *= 1.1;
-      let duracion = Math.round(base * factor);
-      duraciones.push(duracion);
-      suma += duracion;
-    }
-    if (suma !== tiempoPrincipal && suma > 0) {
-      let ajuste = tiempoPrincipal / suma;
-      duraciones = duraciones.map(d => Math.max(4, Math.round(d * ajuste)));
-      let nuevaSuma = duraciones.reduce((a,b)=>a+b,0);
-      if (nuevaSuma !== tiempoPrincipal) {
-        duraciones[0] += (tiempoPrincipal - nuevaSuma);
-      }
-    }
-    
-    let html = `<div><h2>🏆 ENTRENAMIENTO DE 90 MINUTOS 🏆</h2>
-    <p><strong>Edad:</strong> ${edad}  |  <strong>Nivel:</strong> ${nivel}  |  <strong>Énfasis:</strong> ${tipo.toUpperCase()}  |  <strong>Ejercicios:</strong> ${cantidadEjercicios}</p>
-    <div class="ejercicio-item"><h3>🧘 INICIO - CALENTAMIENTO Y MOVILIDAD (10 min)</h3>
-    <p>🔁 Estiramientos dinámicos: giros, brazos, cadera, zancadas, trote, skipping.<br> 
-    🏀 Material: ninguno o conos.<br>
-    <div class="grafico-svg">${generarSVG("calentamiento")}</div>
-    </div>`;
-    
-    for (let i = 0; i < ejerciciosSeleccionados.length; i++) {
-      const ex = ejerciciosSeleccionados[i];
-      const duracion = duraciones[i];
-      html += `<div class="ejercicio-item">
-        <h3>⏱️ Ejercicio ${i+1}: ${ex.nombre} (${duracion} minutos)</h3>
-        <p><strong>🎯 Enfoque:</strong> ${ex.tipo.toUpperCase()}  |  <strong>🧰 Material:</strong> ${ex.material}</p>
-        <p><strong>📝 Explicación:</strong> ${ex.nombre}. ${ex.descripcion}</p>
-        <div class="grafico-svg">${generarSVG(ex.tipo)}</div>
-      </div>`;
-    }
-    
-    html += `<div class="ejercicio-item"><h3>🧘 FINAL - VUELTA A LA CALMA Y ESTIRAMIENTOS (10 min)</h3>
-    <p>🧘‍♂️ Estiramientos estáticos (20-30 seg): isquiotibiales, cuádriceps, gemelos, espalda baja, hombros.<br>
-    🧘 Material: colchoneta.<br>
-    <div class="grafico-svg">${generarSVG("estiramientos")}</div>
-    </div>
-    <hr><p>✅ Plan generado automáticamente. Ajusta intensidad según el equipo. ¡Disfruta!</p></div>`;
-    
-    document.getElementById("resultado").innerHTML = html;
-  }
-  
-  document.getElementById("generarBtn").addEventListener("click", generarEntrenamiento);
-  document.getElementById("exportarPdfBtn").addEventListener("click", () => {
-    window.print();
-  });
-  window.addEventListener("load", generarEntrenamiento);
-</script>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('SW registrado:', reg.scope))
-        .catch(err => console.log('Error SW:', err));
-    });
-  }
-</script>
-</body>
-</html>
+    else if (nombre.includes("Cambios de dirección")) {
+      let conos = [[100,280],[160,230],[220
