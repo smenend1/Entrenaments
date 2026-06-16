@@ -84,6 +84,7 @@
       padding: 20px;
       margin-top: 25px;
       overflow-x: auto;
+      min-height: 100px;
     }
     .ejercicio-item {
       border-bottom: 1px solid #c0b28a;
@@ -114,6 +115,13 @@
       font-size: 0.7rem;
       margin-top: 20px;
       opacity: 0.7;
+    }
+    .error-msg {
+      background: #e74c3c;
+      color: white;
+      padding: 10px;
+      border-radius: 12px;
+      margin-top: 10px;
     }
     /* Estilos para impresión / PDF */
     @media print {
@@ -200,7 +208,9 @@
   </div>
   <button id="generarBtn">✨ GENERAR ENTRENAMIENTO DE 90 MIN ✨</button>
   <button id="exportarPdfBtn" class="boton-pdf">📄 EXPORTAR A PDF / IMPRIMIR</button>
-  <div id="resultado" class="resultado"></div>
+  <div id="resultado" class="resultado">
+    <p style="color: #666; text-align: center;">Generando entrenamiento...</p>
+  </div>
   <footer>PWA instalable - Ejercicios por edad y gráficos de pista</footer>
 </div>
 
@@ -299,8 +309,8 @@
     }
   };
 
-  // =================== GENERADOR DE SVG POR EJERCICIO ===================
-  function generarSVGDetallado(nombre, tipo, edad) {
+  // =================== GENERADOR DE SVG POR EJERCICIO (robusto) ===================
+  function generarSVGDetallado(nombre, tipo) {
     // Plantilla base de cancha
     let svg = `<svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">`;
     svg += `<rect width="500" height="400" fill="#d9c8a9" rx="8" />`;
@@ -317,8 +327,11 @@
     svg += `<path d="M80 70 Q250 20 420 70" fill="none" stroke="#8b7355" stroke-width="2" stroke-dasharray="6,4" />`;
     svg += `<path d="M80 330 Q250 380 420 330" fill="none" stroke="#8b7355" stroke-width="2" stroke-dasharray="6,4" />`;
 
+    // Normalizar nombre para comparaciones (quitar paréntesis, etc.)
+    const nombreLower = nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
+
     // Dibujos específicos según el nombre del ejercicio
-    if (nombre.includes("Sentadillas")) {
+    if (nombreLower.includes("sentadillas") || nombreLower.includes("sentadilla")) {
       svg += `<circle cx="250" cy="250" r="22" fill="#e67e22" />`;
       svg += `<rect x="235" y="270" width="30" height="45" rx="12" fill="#e67e22" />`;
       svg += `<line x1="235" y1="290" x2="210" y2="330" stroke="#e67e22" stroke-width="8" stroke-linecap="round" />`;
@@ -327,7 +340,7 @@
       svg += `<path d="M180 330 Q250 310 320 330" fill="none" stroke="#e67e22" stroke-width="3" stroke-dasharray="4,4" />`;
       svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 SENTADILLAS</text>`;
     }
-    else if (nombre.includes("Plancha")) {
+    else if (nombreLower.includes("plancha")) {
       svg += `<rect x="190" y="240" width="120" height="40" rx="10" fill="#e67e22" />`;
       svg += `<circle cx="210" cy="230" r="18" fill="#e67e22" />`;
       svg += `<line x1="190" y1="280" x2="160" y2="320" stroke="#e67e22" stroke-width="8" />`;
@@ -336,7 +349,7 @@
       svg += `<path d="M210 240 L230 240" stroke="white" stroke-width="3" />`;
       svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 PLANCHA</text>`;
     }
-    else if (nombre.includes("Zancadas")) {
+    else if (nombreLower.includes("zancadas") || nombreLower.includes("zancada")) {
       svg += `<circle cx="220" cy="220" r="22" fill="#e67e22" />`;
       svg += `<rect x="205" y="240" width="30" height="40" rx="12" fill="#e67e22" />`;
       svg += `<line x1="205" y1="260" x2="170" y2="310" stroke="#e67e22" stroke-width="8" />`;
@@ -344,13 +357,13 @@
       svg += `<circle cx="280" cy="230" r="12" fill="#f1c40f" />`;
       svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 ZANCADAS</text>`;
     }
-    else if (nombre.includes("Saltos al cajón")) {
+    else if (nombreLower.includes("saltos al cajón") || nombreLower.includes("cajón")) {
       svg += `<rect x="200" y="300" width="100" height="25" fill="#8e44ad" rx="4" />`;
       svg += `<circle cx="250" cy="260" r="22" fill="#e67e22" />`;
       svg += `<path d="M220 280 Q250 220 280 280" fill="none" stroke="#e67e22" stroke-width="4" stroke-dasharray="6,4" />`;
-      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 SALTOS AL CAJÓN</text>`;
+      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 SALTOS CAJÓN</text>`;
     }
-    else if (nombre.includes("Fondos")) {
+    else if (nombreLower.includes("fondos") || nombreLower.includes("fondo")) {
       svg += `<rect x="180" y="310" width="140" height="20" fill="#95a5a6" rx="4" />`;
       svg += `<circle cx="210" cy="280" r="18" fill="#e67e22" />`;
       svg += `<circle cx="290" cy="280" r="18" fill="#e67e22" />`;
@@ -358,15 +371,8 @@
       svg += `<line x1="290" y1="290" x2="320" y2="310" stroke="#e67e22" stroke-width="6" />`;
       svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">💪 FONDOS</text>`;
     }
-    else if (nombre.includes("Sprint en escalera")) {
+    else if (nombreLower.includes("sprint en escalera") || nombreLower.includes("escalera")) {
       for (let i=0; i<8; i++) {
         let x = 80 + i*40;
         svg += `<rect x="${x}" y="180" width="30" height="30" fill="none" stroke="#e74c3c" stroke-width="2" />`;
-        svg += `<text x="${x+15}" y="200" font-size="12" fill="#e74c3c" text-anchor="middle">${i+1}</text>`;
-      }
-      svg += `<path d="M80 195 Q150 160 220 195 Q290 230 360 195" fill="none" stroke="#2980b9" stroke-width="4" marker-end="url(#arrow)" />`;
-      svg += `<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2980b9" /></marker></defs>`;
-      svg += `<text x="250" y="50" font-size="18" font-weight="bold" fill="#2c3e50" text-anchor="middle">⚡ SPRINT ESCALERA</text>`;
-    }
-    else if (nombre.includes("Cambios de dirección")) {
-      let conos = [[100,280],[160,230],[220
+        svg 
